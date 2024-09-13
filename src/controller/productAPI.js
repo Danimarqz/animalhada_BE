@@ -1,5 +1,5 @@
 // src/templates/basic/productAPI.js
-import { createSupabaseClient } from '../db';
+import { createSupabaseClient } from './supabaseClient';
 
 const productAPI = (app, env) => {
 	const supabase = createSupabaseClient(env);
