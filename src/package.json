@@ -1,0 +1,16 @@
+{
+  "name": "animalhada",
+  "version": "0.0.0",
+  "devDependencies": {
+    "wrangler": "^3.19.0"
+  },
+  "private": true,
+  "scripts": {
+    "start": "wrangler dev",
+    "deploy": "wrangler publish"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.36.0",
+    "hono": "^4.6.1"
+  }
+}
