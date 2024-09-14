@@ -1,15 +1,18 @@
 // src/templates/basic/clientAPI.js
 import { Create, Delete, GetAll, GetById, Update } from '../repository/clientRepo';
+import { errorMsg, getPaginationLimits } from '../utils/utils';
 
-const errorMsg = (error) => c.json( { error: error.message }, 500);
 
 const clientAPI = (app, db) => {
-	app.get('/client', async (c) => {
+	app.get('/client/:page?', async (c) => {
+		const pagination = getPaginationLimits(c.req.param('page'));
 		try {
-			const { data, status } = await GetAll(db);
+			const { data, status } = pagination
+			? await GetAll(db, pagination.from, pagination.to)
+			: await GetAll(db);
 			return c.json(data, status);
 		} catch(error) {
-			return errorMsg(error);
+			return errorMsg(c, error);
 		}
 	});
 
@@ -18,7 +21,7 @@ const clientAPI = (app, db) => {
 			const { data, status } = await GetById(db);
 			return c.json(data, status);
 		} catch(error) {
-			return errorMsg(error);
+			return errorMsg(c, error);
 		}
 	})
 	app.post('/client', async (c) => {
@@ -27,7 +30,7 @@ const clientAPI = (app, db) => {
 			const { data, status } = await Create(db, newClient);
 			return c.json(data, status);
 		} catch(error) {
-			return errorMsg(error);
+			return errorMsg(c, error);
 		}
 	});
 
@@ -38,7 +41,7 @@ const clientAPI = (app, db) => {
 			const { data, status } = await Update(db, id, updatedClient);
 			return c.json(data, status);
 		} catch(error) {
-			return errorMsg(error);
+			return errorMsg(c, error);
 		}
 	});
 
@@ -48,7 +51,7 @@ const clientAPI = (app, db) => {
 			const { status } = await Delete(db, id);
 			return c.json(status);
 		} catch(error) {
-			return errorMsg(error);
+			return errorMsg(c, error);
 		}
 	});
 };
