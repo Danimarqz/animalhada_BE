@@ -16,9 +16,16 @@ const clientAPI = (app, db) => {
 		}
 	});
 
-	app.get('/client:id', async (c) => {
+	app.get('/client/id/:id', async (c) => {
+		const id = parseInt(c.req.param('id'), 10);
+		if (isNaN(id)) {
+			return c.json({ error: 'Invalid ID' }, 400);
+		}
 		try {
-			const { data, status } = await GetById(db);
+			const { data, status } = await GetById(db, id);
+			if (!data || data.length === 0) {
+				return c.json({ error: 'Client not found' }, 404);
+			}
 			return c.json(data, status);
 		} catch(error) {
 			return errorMsg(c, error);
