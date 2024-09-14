@@ -42,7 +42,10 @@ const clientAPI = (app, db) => {
 	});
 
 	app.put('/client/:id', async (c) => {
-		const id = c.req.param('id');
+		const id = parseInt(c.req.param('id'), 10);
+		if (isNaN(id)) {
+			return c.json({ error: 'Invalid ID' }, 400);
+		}
 		const updatedClient = await c.req.json();
 		try {
 			const { data, status } = await Update(db, id, updatedClient);
@@ -53,7 +56,10 @@ const clientAPI = (app, db) => {
 	});
 
 	app.delete('/client/:id', async (c) => {
-		const id = c.req.param('id');
+		const id = parseInt(c.req.param('id'), 10);
+		if (isNaN(id)) {
+			return c.json({ error: 'Invalid ID' }, 400);
+		}
 		try {
 			const { status } = await Delete(db, id);
 			return c.json(status);

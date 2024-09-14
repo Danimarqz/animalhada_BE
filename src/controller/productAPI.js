@@ -5,6 +5,9 @@ const productAPI = (app, db) => {
 	// 1 product by id
 	app.get('/product/id/:id', async (c) => {
 		const id = parseInt(c.req.param('id'), 10);
+		if (isNaN(id)) {
+			return c.json({ error: 'Invalid ID' }, 400);
+		}
 		try {
 			const { data, status } = await GetById(db, id);
 			return c.json(data, status);
@@ -63,7 +66,10 @@ const productAPI = (app, db) => {
 
 	// update product
 	app.put('/product/:id', async (c) => {
-		const id = c.req.param('id');
+		const id = parseInt(c.req.param('id'), 10);
+		if (isNaN(id)) {
+			return c.json({ error: 'Invalid ID' }, 400);
+		}
 		const updates = await c.req.json();
 		try {
 			const { data, status } = await Update(db, id, updates);
@@ -75,7 +81,10 @@ const productAPI = (app, db) => {
 
 	// delete product
 	app.delete('/product/:id', async (c) => {
-		const id = c.req.param('id');
+		const id = parseInt(c.req.param('id'), 10);
+		if (isNaN(id)) {
+			return c.json({ error: 'Invalid ID' }, 400);
+		}
 		try {
 			const { status } = await Delete(db, id);
 			return c.json(status);
