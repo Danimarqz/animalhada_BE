@@ -25,8 +25,8 @@ const clientAPI = (app: Hono, db: Env) => {
 	  }
 	});
 
-  app.get('/client/:page?', async (c: Context) => {
-    const pageParam: string = c.req.param('page');
+  app.get('/client', async (c: Context) => {
+    const pageParam: string | undefined = c.req.query('page');
     const pagination: Pagination | null = getPaginationLimits(pageParam);
     try {
       const { data, status } = pagination

@@ -24,15 +24,14 @@ const productAPI = (app: Hono, db: Env) => {
 	});
 
 	// all products filtered by category, with pagination and ordering by price
-	app.get('/product/category/:category/:page?/:order?', async (c: Context) => {
-		const pageParam: string = c.req.param('page');
-		const pagination: Pagination | null = getPaginationLimits(pageParam);
-		const category: string[] = [c.req.param('category')];
-		const order: boolean | null = Boolean(c.req.param('order'));
+	app.get('/product/category/', async (c: Context) => {
+		const { page, order } = c.req.query();
+		const categories: string[] = c.req.queries('category') || []
+		const pagination: Pagination | null = getPaginationLimits(page);
 		try {
 			const { data, status } = pagination
-				? await GetByCategory(db, category, order, pagination.from, pagination.to)
-				: await GetByCategory(db, category, order);
+				? await GetByCategory(db, categories, Boolean(order), pagination.from, pagination.to)
+				: await GetByCategory(db, categories, Boolean(order));
 
 			return c.json(data as Product[], status as StatusCode);
 		} catch (error) {
@@ -41,14 +40,13 @@ const productAPI = (app: Hono, db: Env) => {
 	});
 
 	// all products paginated with ordering by price
-	app.get('/product/:page?/:order?', async (c: Context) => {
-		const pageParam: string = c.req.param('page');
-		const pagination: Pagination | null = getPaginationLimits(pageParam);
-		const order: boolean | null = Boolean(c.req.param('order'));
+	app.get('/product', async (c: Context) => {
+		const { page, order } = c.req.query();
+		const pagination: Pagination | null = getPaginationLimits(page);
 		try {
 			const { data, status } = pagination
-				? await GetAll(db, order, pagination.from, pagination.to)
-				: await GetAll(db, order);
+				? await GetAll(db, Boolean(order), pagination.from, pagination.to)
+				: await GetAll(db, Boolean(order));
 
 			return c.json(data as Product[], status as StatusCode);
 		} catch (error) {

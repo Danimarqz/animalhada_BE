@@ -36,7 +36,7 @@ export const GetById = async (db: Env, id: number): Promise<ApiResponse<Product>
 	return { data, status: status as StatusCode };
 }
 
-export const GetByCategory = async (db: Env, category: String[], order: boolean = true, from: number = 0, to: number = 20): Promise<ApiResponse<Product[]>> => {
+export const GetByCategory = async (db: Env, category: string[], order: boolean = true, from: number = 0, to: number = 20): Promise<ApiResponse<Product[]>> => {
 	const { data, error, status } = order == null
 	? await createSupabaseClient(db)
 		.from('product')
