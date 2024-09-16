@@ -1,10 +1,14 @@
 import { createSupabaseClient } from "../db"
-import { Tables } from "../types/database.types";
+import { Tables, TablesInsert, TablesUpdate } from "../types/database.types";
 import { ApiResponse } from "../types/apiResponse";
 import { Env } from "../types/env";
 import { StatusCode } from 'hono/utils/http-status';
 
 type Product = Tables<'product'>
+
+type newProduct = TablesInsert<'product'>
+
+type updateProduct = TablesUpdate<'product'>
 
 export const GetAll = async (db: Env, order: boolean = true, from: number = 0, to: number = 20): Promise<ApiResponse<Product[]>> => {
 	const { data, error, status } = order == null
@@ -56,7 +60,7 @@ export const GetByCategory = async (db: Env, category: string[], order: boolean 
 	return { data, status: status as StatusCode };
 }
 
-export const Create = async (db: Env, newProduct: Product): Promise<ApiResponse<Product>> => {
+export const Create = async (db: Env, newProduct: newProduct): Promise<ApiResponse<Product>> => {
 	const { data, error, status } = await createSupabaseClient(db)
 		.from('product')
 		.insert([newProduct])
@@ -66,7 +70,7 @@ export const Create = async (db: Env, newProduct: Product): Promise<ApiResponse<
 	return { data, status: status as StatusCode };
 }
 
-export const Update = async (db: Env, id: number, product: Product): Promise<ApiResponse<Product>> => {
+export const Update = async (db: Env, id: number, product: updateProduct): Promise<ApiResponse<Product>> => {
 	const { data, error, status } = await createSupabaseClient(db)
 		.from('product')
 		.update(product)
