@@ -4,8 +4,8 @@ import { Database } from './types/database.types';
 
 
 export function createSupabaseClient(env: Env): SupabaseClient {
-  const supabaseUrl = env.SUPABASE_URL;
-  const supabaseKey = env.SUPABASE_KEY;
+	const supabaseUrl = env.SUPABASE_URL;
+	const supabaseKey = env.SUPABASE_KEY;
 
-  return createClient<Database>(supabaseUrl, supabaseKey);
+	return createClient<Database>(supabaseUrl, supabaseKey);
 }

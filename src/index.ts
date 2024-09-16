@@ -4,13 +4,13 @@ import productAPI from './controller/productAPI';
 import { Env } from './types/env';
 
 export default {
-  async fetch(request: Request, env: Env, context: ExecutionContext): Promise<Response> {
-    const app = new Hono();
-    const api = app.basePath('/api');
+	async fetch(request: Request, env: Env, context: ExecutionContext): Promise<Response> {
+		const app = new Hono();
+		const api = app.basePath('/api');
 
-    clientAPI(api, env);
-    productAPI(api, env);
+		clientAPI(api, env);
+		productAPI(api, env);
 
-    return app.fetch(request, env, context);
-  }
+		return app.fetch(request, env, context);
+	}
 }

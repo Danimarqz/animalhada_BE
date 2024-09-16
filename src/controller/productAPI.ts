@@ -2,11 +2,16 @@ import { Context, Hono } from "hono";
 import { Create, GetAll, GetByCategory, GetById, Update, Delete } from "../repository/productRepo";
 import { errorMsg, getPaginationLimits } from "../utils/utils";
 import { Env } from "../types/env";
-import { Tables } from "../types/database.types";
+import { Tables, TablesInsert, TablesUpdate } from "../types/database.types";
 import { StatusCode } from "hono/utils/http-status";
 import { Pagination } from "../types/pagination";
+import { ApiResponse } from "../types/apiResponse";
 
 type Product = Tables<'product'>
+
+type newProduct = TablesInsert<'product'>
+
+type updateProduct = TablesUpdate<'product'>
 
 const productAPI = (app: Hono, db: Env) => {
 	// 1 product by id
@@ -16,8 +21,8 @@ const productAPI = (app: Hono, db: Env) => {
 			return c.json({ error: 'Invalid ID' }, 400);
 		}
 		try {
-			const { data, status } = await GetById(db, id);
-			return c.json(data as Product, status as StatusCode);
+			const { data, status }: ApiResponse<Product> = await GetById(db, id);
+			return c.json(data, status);
 		} catch (error) {
 			return errorMsg(c, error as Error);
 		}
@@ -29,11 +34,11 @@ const productAPI = (app: Hono, db: Env) => {
 		const categories: string[] = c.req.queries('category') || []
 		const pagination: Pagination | null = getPaginationLimits(page);
 		try {
-			const { data, status } = pagination
+			const { data, status }: ApiResponse<Product[]> = pagination
 				? await GetByCategory(db, categories, Boolean(order), pagination.from, pagination.to)
 				: await GetByCategory(db, categories, Boolean(order));
 
-			return c.json(data as Product[], status as StatusCode);
+			return c.json(data, status);
 		} catch (error) {
 			return errorMsg(c, error as Error);
 		}
@@ -44,11 +49,11 @@ const productAPI = (app: Hono, db: Env) => {
 		const { page, order } = c.req.query();
 		const pagination: Pagination | null = getPaginationLimits(page);
 		try {
-			const { data, status } = pagination
+			const { data, status }: ApiResponse<Product[]> = pagination
 				? await GetAll(db, Boolean(order), pagination.from, pagination.to)
 				: await GetAll(db, Boolean(order));
 
-			return c.json(data as Product[], status as StatusCode);
+			return c.json(data, status);
 		} catch (error) {
 			return errorMsg(c, error as Error);
 		}
@@ -56,10 +61,10 @@ const productAPI = (app: Hono, db: Env) => {
 
 	// new product
 	app.post('/product', async (c: Context) => {
-		const newProduct: Product = await c.req.json();
+		const newProduct: newProduct = await c.req.json();
 		try {
-			const { data, status } = await Create(db, newProduct);
-			return c.json(data as Product, status as StatusCode);
+			const { data, status }: ApiResponse<Product> = await Create(db, newProduct);
+			return c.json(data, status);
 		} catch (error) {
 			return errorMsg(c, error as Error);
 		}
@@ -71,10 +76,10 @@ const productAPI = (app: Hono, db: Env) => {
 		if (isNaN(id)) {
 			return c.json({ error: 'Invalid ID' }, 400);
 		}
-		const updates: Product = await c.req.json();
+		const updates: updateProduct = await c.req.json();
 		try {
-			const { data, status } = await Update(db, id, updates);
-			return c.json(data as Product, status as StatusCode);
+			const { data, status }: ApiResponse<Product> = await Update(db, id, updates);
+			return c.json(data, status as StatusCode);
 		} catch (error) {
 			return errorMsg(c, error as Error);
 		}

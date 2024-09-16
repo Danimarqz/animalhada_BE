@@ -12,17 +12,17 @@ type updateProduct = TablesUpdate<'product'>
 
 export const GetAll = async (db: Env, order: boolean = true, from: number = 0, to: number = 20): Promise<ApiResponse<Product[]>> => {
 	const { data, error, status } = order == null
-	? await createSupabaseClient(db)
-		.from('product')
-		.select('*')
-		.range(from, to)
-		.returns<Product[]>()
-	: await createSupabaseClient(db)
-		.from('product')
-		.select('*')
-		.order('price', {ascending: order})
-		.range(from, to)
-		.returns<Product[]>();
+		? await createSupabaseClient(db)
+			.from('product')
+			.select('*')
+			.range(from, to)
+			.returns<Product[]>()
+		: await createSupabaseClient(db)
+			.from('product')
+			.select('*')
+			.order('price', { ascending: order })
+			.range(from, to)
+			.returns<Product[]>();
 
 	if (error) throw error;
 	return { data, status: status as StatusCode };
@@ -42,19 +42,19 @@ export const GetById = async (db: Env, id: number): Promise<ApiResponse<Product>
 
 export const GetByCategory = async (db: Env, category: string[], order: boolean = true, from: number = 0, to: number = 20): Promise<ApiResponse<Product[]>> => {
 	const { data, error, status } = order == null
-	? await createSupabaseClient(db)
-		.from('product')
-		.select('*')
-		.contains('category', [category])
-		.range(from, to)
-		.returns<Product[]>()
-	: await createSupabaseClient(db)
-		.from('product')
-		.select('*')
-		.contains('category', [category])
-		.order('price', { ascending: order })
-		.range(from, to)
-		.returns<Product[]>();
+		? await createSupabaseClient(db)
+			.from('product')
+			.select('*')
+			.contains('category', [category])
+			.range(from, to)
+			.returns<Product[]>()
+		: await createSupabaseClient(db)
+			.from('product')
+			.select('*')
+			.contains('category', [category])
+			.order('price', { ascending: order })
+			.range(from, to)
+			.returns<Product[]>();
 
 	if (error) throw error;
 	return { data, status: status as StatusCode };
