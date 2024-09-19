@@ -48,7 +48,7 @@ const clientAPI = (app: Hono, db: Env) => {
 		}
 	});
 
-	app.post('/client', async (c: Context) => {
+	app.post('/admin/client', async (c: Context) => {
 		if (!checkOriginAdmin(c, db)) return errorCors(c)
 
 		const newClient = await c.req.json() as newClient
@@ -60,7 +60,7 @@ const clientAPI = (app: Hono, db: Env) => {
 		}
 	});
 
-	app.put('/client/:id', async (c: Context) => {
+	app.put('/admin/client/:id', async (c: Context) => {
 		if (!checkOriginAdmin(c, db)) return errorCors(c)
 
 		const id = parseInt(c.req.param('id'), 10);
@@ -76,7 +76,7 @@ const clientAPI = (app: Hono, db: Env) => {
 		}
 	});
 
-	app.delete('/client/:id', async (c: Context) => {
+	app.delete('/admin/client/:id', async (c: Context) => {
 		if (!checkOriginAdmin(c, db)) return errorCors(c)
 
 		const id: number = parseInt(c.req.param('id'), 10);
