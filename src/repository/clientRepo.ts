@@ -4,11 +4,11 @@ import { ApiResponse } from '../types/apiResponse';
 import { Env } from '../types/env';
 import { StatusCode } from 'hono/utils/http-status';
 
-type Client = Tables<'client'>
+export type Client = Tables<'client'>
 
-type newClient = TablesInsert<'client'>
+export type newClient = TablesInsert<'client'>
 
-type updateClient = TablesUpdate<'client'>
+export type updateClient = TablesUpdate<'client'>
 
 export const GetAll = async (db: Env, from: number = 0, to: number = 20): Promise<ApiResponse<Client[]>> => {
 	const { data, error, status } = await createSupabaseClient(db)

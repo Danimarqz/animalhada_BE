@@ -4,11 +4,11 @@ import { ApiResponse } from "../types/apiResponse";
 import { Env } from "../types/env";
 import { StatusCode } from 'hono/utils/http-status';
 
-type Product = Tables<'product'>
+export type Product = Tables<'product'>
 
-type newProduct = TablesInsert<'product'>
+export type newProduct = TablesInsert<'product'>
 
-type updateProduct = TablesUpdate<'product'>
+export type updateProduct = TablesUpdate<'product'>
 
 export const GetAll = async (db: Env, order: boolean = true, from: number = 0, to: number = 20): Promise<ApiResponse<Product[]>> => {
 	const { data, error, status } = order == null

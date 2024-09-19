@@ -1,18 +1,11 @@
 import { Hono, Context } from 'hono';
 import { Env } from '../types/env';
-import { Create, Delete, GetAll, GetById, Update } from '../repository/clientRepo';
+import { Client, newClient, updateClient, Create, Delete, GetAll, GetById, Update } from '../repository/clientRepo';
 import { errorMsg, getPaginationLimits } from '../utils/utils';
-import { Tables, TablesInsert, TablesUpdate } from '../types/database.types';
 import { Pagination } from '../types/pagination';
 import { StatusCode } from 'hono/utils/http-status';
 import { ApiResponse } from '../types/apiResponse';
 import { checkOriginBoth, checkOriginAdmin, errorCors } from '../cors';
-
-type Client = Tables<'client'>
-
-type newClient = TablesInsert<'client'>
-
-type updateClient = TablesUpdate<'client'>
 
 const clientAPI = (app: Hono, db: Env) => {
 	app.get('/client/id/:id', async (c: Context) => {

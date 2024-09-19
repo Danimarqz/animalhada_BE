@@ -1,18 +1,12 @@
 import { Context, Hono } from "hono";
-import { Create, GetAll, GetByCategory, GetById, Update, Delete } from "../repository/productRepo";
+import { Product, newProduct, updateProduct, Create, GetAll, GetByCategory, GetById, Update, Delete } from "../repository/productRepo";
 import { errorMsg, getPaginationLimits } from "../utils/utils";
 import { Env } from "../types/env";
-import { Tables, TablesInsert, TablesUpdate } from "../types/database.types";
 import { StatusCode } from "hono/utils/http-status";
 import { Pagination } from "../types/pagination";
 import { ApiResponse } from "../types/apiResponse";
 import { checkOriginAdmin, checkOriginBoth, errorCors } from "../cors";
 
-type Product = Tables<'product'>
-
-type newProduct = TablesInsert<'product'>
-
-type updateProduct = TablesUpdate<'product'>
 
 const productAPI = (app: Hono, db: Env) => {
 	// 1 product by id
