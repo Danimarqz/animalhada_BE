@@ -64,6 +64,7 @@ export const Create = async (db: Env, newProduct: newProduct): Promise<ApiRespon
 	const { data, error, status } = await createSupabaseClient(db)
 		.from('product')
 		.insert([newProduct])
+		.select()
 		.returns<Product>();
 
 	if (error) throw error;
@@ -75,6 +76,7 @@ export const Update = async (db: Env, id: number, product: updateProduct): Promi
 		.from('product')
 		.update(product)
 		.eq('id', id)
+		.select()
 		.returns<Product>();
 
 	if (error) throw error;
