@@ -2,6 +2,7 @@
 	"name": "animalhada",
 	"version": "0.0.0",
 	"devDependencies": {
+		"@types/bcryptjs": "^2.4.6",
 		"wrangler": "^3.19.0"
 	},
 	"private": true,
@@ -11,6 +12,7 @@
 	},
 	"dependencies": {
 		"@supabase/supabase-js": "^2.36.0",
+		"bcryptjs": "^2.4.3",
 		"hono": "^4.6.1",
 		"typescript": "^5.6.2"
 	}

@@ -1,6 +1,7 @@
 import { ExecutionContext, Hono } from 'hono';
 import clientAPI from './controller/clientAPI';
 import productAPI from './controller/productAPI';
+import userAPI from './controller/userAPI';
 import { Env } from './types/env';
 
 export default {
@@ -10,6 +11,7 @@ export default {
 
 		clientAPI(api, env);
 		productAPI(api, env);
+		userAPI(api, env);
 
 		return app.fetch(request, env, context);
 	}
