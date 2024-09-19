@@ -36,6 +36,7 @@ export const Create = async (db: Env, newClient: newClient): Promise<ApiResponse
 	const { data, error, status } = await createSupabaseClient(db)
 		.from('client')
 		.insert([newClient])
+		.select()
 		.returns<Client>();
 
 	if (error) throw error;
@@ -47,6 +48,7 @@ export const Update = async (db: Env, id: number, client: updateClient): Promise
 		.from('client')
 		.update(client)
 		.eq('id', id)
+		.select()
 		.returns<Client>();
 
 	if (error) throw error;

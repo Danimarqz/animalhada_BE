@@ -6,6 +6,7 @@ import { Tables, TablesInsert, TablesUpdate } from '../types/database.types';
 import { Pagination } from '../types/pagination';
 import { StatusCode } from 'hono/utils/http-status';
 import { ApiResponse } from '../types/apiResponse';
+import { checkOriginBoth, checkOriginAdmin, errorCors } from '../cors';
 
 type Client = Tables<'client'>
 
@@ -15,6 +16,8 @@ type updateClient = TablesUpdate<'client'>
 
 const clientAPI = (app: Hono, db: Env) => {
 	app.get('/client/id/:id', async (c: Context) => {
+		if(!checkOriginBoth(c, db)) return errorCors(c)
+
 		const id: number = parseInt(c.req.param('id'), 10);
 		if (isNaN(id)) {
 			return c.json({ error: 'Invalid ID' }, 400);
@@ -31,7 +34,9 @@ const clientAPI = (app: Hono, db: Env) => {
 	});
 
 	app.get('/client', async (c: Context) => {
-		const pageParam: string | undefined = c.req.query('page');
+		if(!checkOriginBoth(c, db)) return errorCors(c)
+
+		const pageParam: string | undefined = c.req.query('page')
 		const pagination: Pagination | null = getPaginationLimits(pageParam);
 		try {
 			const { data, status }: ApiResponse<Client[]> = pagination
@@ -44,7 +49,9 @@ const clientAPI = (app: Hono, db: Env) => {
 	});
 
 	app.post('/client', async (c: Context) => {
-		const newClient = await c.req.json() as newClient;
+		if (!checkOriginAdmin(c, db)) return errorCors(c)
+
+		const newClient = await c.req.json() as newClient
 		try {
 			const { data, status }: ApiResponse<Client> = await Create(db, newClient);
 			return c.json(data, status);
@@ -54,6 +61,8 @@ const clientAPI = (app: Hono, db: Env) => {
 	});
 
 	app.put('/client/:id', async (c: Context) => {
+		if (!checkOriginAdmin(c, db)) return errorCors(c)
+
 		const id = parseInt(c.req.param('id'), 10);
 		if (isNaN(id)) {
 			return c.json({ error: 'Invalid ID' }, 400);
@@ -68,6 +77,8 @@ const clientAPI = (app: Hono, db: Env) => {
 	});
 
 	app.delete('/client/:id', async (c: Context) => {
+		if (!checkOriginAdmin(c, db)) return errorCors(c)
+
 		const id: number = parseInt(c.req.param('id'), 10);
 		if (isNaN(id)) {
 			return c.json({ error: 'Invalid ID' }, 400);
