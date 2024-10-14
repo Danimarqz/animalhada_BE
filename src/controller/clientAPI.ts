@@ -5,7 +5,7 @@ import { errorMsg, getPaginationLimits } from '../utils/utils';
 import { Pagination } from '../types/pagination';
 import { StatusCode } from 'hono/utils/http-status';
 import { ApiResponse } from '../types/apiResponse';
-import { checkOriginBoth, checkOriginAdmin, errorCors } from '../cors';
+import { checkOriginBoth, checkOriginAdmin, errorCors, checkAPIKEY } from '../cors';
 
 const clientAPI = (app: Hono, db: Env) => {
 	app.get('/client/id/:id', async (c: Context) => {
@@ -43,6 +43,7 @@ const clientAPI = (app: Hono, db: Env) => {
 
 	app.post('/admin/client', async (c: Context) => {
 		if (!checkOriginAdmin(c, db)) return errorCors(c)
+		if (!checkAPIKEY(c, db)) return errorCors(c)
 
 		const newClient = await c.req.json() as newClient
 		try {
@@ -55,6 +56,7 @@ const clientAPI = (app: Hono, db: Env) => {
 
 	app.put('/admin/client/:id', async (c: Context) => {
 		if (!checkOriginAdmin(c, db)) return errorCors(c)
+		if (!checkAPIKEY(c, db)) return errorCors(c)
 
 		const id = parseInt(c.req.param('id'), 10);
 		if (isNaN(id)) {
@@ -71,6 +73,7 @@ const clientAPI = (app: Hono, db: Env) => {
 
 	app.delete('/admin/client/:id', async (c: Context) => {
 		if (!checkOriginAdmin(c, db)) return errorCors(c)
+		if (!checkAPIKEY(c, db)) return errorCors(c)
 
 		const id: number = parseInt(c.req.param('id'), 10);
 		if (isNaN(id)) {

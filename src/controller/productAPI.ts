@@ -5,7 +5,7 @@ import { Env } from "../types/env";
 import { StatusCode } from "hono/utils/http-status";
 import { Pagination } from "../types/pagination";
 import { ApiResponse } from "../types/apiResponse";
-import { checkOriginAdmin, checkOriginBoth, errorCors } from "../cors";
+import { checkAPIKEY, checkOriginAdmin, checkOriginBoth, errorCors } from "../cors";
 
 
 const productAPI = (app: Hono, db: Env) => {
@@ -63,7 +63,7 @@ const productAPI = (app: Hono, db: Env) => {
 	// new product
 	app.post('/admin/product', async (c: Context) => {
 		if (!checkOriginAdmin(c, db)) return errorCors(c)
-
+		if (!checkAPIKEY(c, db)) return errorCors(c)
 		const newProduct: newProduct = await c.req.json();
 		try {
 			const { data, status }: ApiResponse<Product> = await Create(db, newProduct);
@@ -76,6 +76,7 @@ const productAPI = (app: Hono, db: Env) => {
 	// update product
 	app.put('/admin/product/:id', async (c: Context) => {
 		if (!checkOriginAdmin(c, db)) return errorCors(c)
+		if (!checkAPIKEY(c, db)) return errorCors(c)
 
 		const id: number = parseInt(c.req.param('id'), 10);
 		if (isNaN(id)) {
@@ -93,6 +94,7 @@ const productAPI = (app: Hono, db: Env) => {
 	// delete product
 	app.delete('/admin/product/:id', async (c: Context) => {
 		if (!checkOriginAdmin(c, db)) return errorCors(c)
+		if (!checkAPIKEY(c, db)) return errorCors(c)
 
 		const id: number = parseInt(c.req.param('id'), 10);
 		if (isNaN(id)) {
