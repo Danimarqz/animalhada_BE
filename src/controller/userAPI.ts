@@ -5,7 +5,8 @@ import { ApiResponse } from "../types/apiResponse";
 import { GetUser, newUser, User, updateUser } from "../repository/userRepo";
 import { errorMsg } from "../utils/utils";
 import { deleteCookie, getSignedCookie, setSignedCookie } from "hono/cookie";
-import Security from "../utils/security";
+import { decrypt } from "../utils/security";
+import { CryptoType } from "../types/cryptoType";
 
 const userAPI = (app: Hono, db: Env) => {
 
@@ -15,12 +16,10 @@ const userAPI = (app: Hono, db: Env) => {
 
 		const { encryptedDataString } = await c.req.json()
 
-		const security = new Security()
-		const decrypted_data = security.decrypt(CRYPTO_KEY, encryptedDataString)
+		const { data }: CryptoType = decrypt(CRYPTO_KEY, encryptedDataString)
 
-		if (decrypted_data) {
-			const jsonObject = JSON.parse(decrypted_data)
-			const { username, password }: newUser = jsonObject
+		if (data) {
+			const { username, password }: newUser = JSON.parse(data)
 			try {
 				const { data, status }: ApiResponse<User> = await GetUser(db, username)
 

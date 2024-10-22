@@ -1,63 +1,6 @@
-import * as crypto from 'crypto';
+import * as crypto from 'crypto-ts';
+import { CryptoType } from '../types/cryptoType';
 
-function splitEncryptedText( encryptedText: string ) {
-    return {
-        encryptedDataString: encryptedText.slice( 56, -32 ),
-        ivString: encryptedText.slice( 0, 24 ),
-        assocDataString: encryptedText.slice( 24, 56 ),
-        tagString: encryptedText.slice( -32 ),
-    }
-}
-
-export default class Security {
-    encoding: BufferEncoding = 'hex';
-
-    encrypt( key:string, plaintext: string ) {
-        try {
-            const iv = crypto.randomBytes( 12 );
-            const assocData = crypto.randomBytes( 16 );
-            const cipher = crypto.createCipheriv( 'chacha20-poly1305', key, iv, {
-                authTagLength: 16,
-            } );
-
-            cipher.setAAD( assocData, { plaintextLength: Buffer.byteLength( plaintext ) } );
-
-            const encrypted = Buffer.concat( [
-                cipher.update(
-                    plaintext, 'utf-8'
-                ),
-                cipher.final(),
-            ] );
-            const tag = cipher.getAuthTag();
-
-            return iv.toString( this.encoding ) + assocData.toString( this.encoding ) + encrypted.toString( this.encoding ) + tag.toString( this.encoding );
-
-        } catch (e) {
-            console.error( e );
-        }
-    };
-
-    decrypt( key:string, cipherText: string ) {
-        const {
-            encryptedDataString,
-            ivString,
-            assocDataString,
-            tagString,
-        } = splitEncryptedText( cipherText );
-
-        try {
-            const iv = Buffer.from( ivString, this.encoding );
-            const encryptedText = Buffer.from( encryptedDataString, this.encoding );
-            const tag = Buffer.from( tagString, this.encoding );
-
-            const decipher = crypto.createDecipheriv( 'chacha20-poly1305', key, iv, { authTagLength: 16 } );
-            decipher.setAAD( Buffer.from( assocDataString, this.encoding ), { plaintextLength: encryptedDataString.length } );
-            decipher.setAuthTag( Buffer.from( tag ) );
-
-            const decrypted = decipher.update( encryptedText );
-            return Buffer.concat( [ decrypted, decipher.final() ] ).toString();
-        } catch (e) {
-            console.error( e );
-        }
-    }
+export function decrypt( key: string, text: string): CryptoType {
+	return JSON.parse(crypto.AES.decrypt(text.toString(), key).toString(crypto.enc.Utf8))
 }
